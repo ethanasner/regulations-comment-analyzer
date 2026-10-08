@@ -13,7 +13,22 @@ def get(path, params=None):
     resp.raise_for_status()
     return resp.json()
 
-if __name__ == "__main__":
-    data = get("documents", {"filter[docketId]": "FAA-2018-1084"})
-    print(data["meta"])
+def list_documents(docket_id):
+    data = get("documents", {"filter[docketId]": docket_id})
+    documents = []
+    for doc in data["data"]:
+        attrs = doc["attributes"]
+        documents.append({
+            "id": doc["id"],
+            "type": attrs["documentType"],
+            "title": attrs["title"],
+            "object_id": attrs["objectId"],
+            "comment_end_date": attrs["commentEndDate"],
+        })
+    return documents
 
+if __name__ == "__main__":
+    docs = list_documents("FAA-2018-1084")
+    for d in docs:
+        print(d)
+   
