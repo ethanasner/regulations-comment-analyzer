@@ -27,8 +27,13 @@ def list_documents(docket_id):
         })
     return documents
 
+def count_comments(object_id):
+    data = get("comments", {"filter[commentOnId]": object_id, "page[size]": 5})
+    return data["meta"]["totalElements"]
+
 if __name__ == "__main__":
     docs = list_documents("FAA-2018-1084")
     for d in docs:
-        print(d)
+        count = count_comments(d["object_id"])
+        print(f"{d['id']} | {d['type']} | {count} comments")
    
