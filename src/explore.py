@@ -1,5 +1,6 @@
 import os 
 import requests 
+import sys 
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -32,8 +33,16 @@ def count_comments(object_id):
     return data["meta"]["totalElements"]
 
 if __name__ == "__main__":
-    docs = list_documents("FAA-2018-1084")
+    if len(sys.argv) < 2:
+        sys.exit("Usage: python src/explore.py DOCKET_ID")
+    docket_id = sys.argv[1]
+
+
+    docs = list_documents(docket_id)
+    total = 0
     for d in docs:
         count = count_comments(d["object_id"])
         print(f"{d['id']} | {d['type']} | {count} comments")
+        total += count
+    print(f"Total: {total} comments")
    
